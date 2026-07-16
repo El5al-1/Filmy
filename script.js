@@ -1,870 +1,870 @@
 /* ============================================
-   El5al Films - Premium Movie Journal
-   script.js - Complete Application Logic
+   El-5al Movie - Premium Movie Journal
+   Professional Application v4.0
    ============================================ */
 
 // ============================================
-// DATA LAYER
+// TRANSLATIONS
 // ============================================
-
-/**
- * Storage key for LocalStorage
- */
-const STORAGE_KEY = 'el5al_films_movies';
-
-/**
- * Available genre list
- */
-const GENRES = [
-  'Action', 'Adventure', 'Animation', 'Comedy', 'Crime',
-  'Documentary', 'Drama', 'Fantasy', 'Horror', 'Musical',
-  'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War', 'Western', 'Other'
-];
-
-/**
- * Load movies from LocalStorage
- * @returns {Array} Array of movie objects
- */
-function loadMovies() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch (e) {
-    console.error('Error loading movies:', e);
-    return [];
+const i18n = {
+  en: {
+    brand: 'El-5al Movie',
+    tagline: 'MOVIE JOURNAL',
+    footer: 'Every Film You Watch, Every Memory You Keep.',
+    
+    navMain: 'Library',
+    navMovies: 'Movies',
+    navSeries: 'Film Series', 
+    navTVShows: 'TV Shows',
+    navTools: 'Tools',
+    navExport: 'Export Backup',
+    navClear: 'Clear All Data',
+    
+    movies: 'Movies',
+    series: 'Film Series',
+    tvshows: 'TV Shows',
+    
+    total: 'Total',
+    watched: 'Watched',
+    planning: 'Planning',
+    watching: 'Watching',
+    favorites: 'Favorites',
+    avgRating: 'Avg Rating',
+    parts: 'Parts',
+    seasons: 'Seasons',
+    
+    search: 'Search...',
+    all: 'All',
+    newest: 'Newest',
+    oldest: 'Oldest',
+    topRated: 'Top Rated',
+    aToZ: 'A-Z',
+    allGenres: 'All Genres',
+    
+    addMovie: 'Add Movie',
+    addSeries: 'Add Series',
+    addTVShow: 'Add TV Show',
+    save: 'Save',
+    cancel: 'Cancel',
+    edit: 'Edit',
+    delete: 'Delete',
+    yesDelete: 'Delete',
+    
+    title: 'Title',
+    genre: 'Genre',
+    year: 'Release Year',
+    rating: 'Rating',
+    status: 'Status',
+    favorite: 'Add to Favorites',
+    notes: 'Notes',
+    numParts: 'Number of Parts',
+    numSeasons: 'Seasons',
+    numEpisodes: 'Episodes',
+    addedOn: 'Added',
+    
+    statusWatched: 'Watched',
+    statusPlanning: 'Planning',
+    statusWatching: 'Watching',
+    
+    required: 'is required',
+    exists: 'already exists',
+    added: 'added!',
+    updated: 'updated!',
+    deleted: 'deleted',
+    favAdded: 'added to favorites',
+    favRemoved: 'removed from favorites',
+    exported: 'Backup exported!',
+    noData: 'No data to export',
+    cleared: 'All data cleared',
+    confirmDel: 'Delete',
+    confirmClear: 'Delete all data? This cannot be undone!',
+    
+    emptyMovies: 'No Movies Yet',
+    emptySeries: 'No Series Yet',
+    emptyTVShows: 'No TV Shows Yet',
+    emptyHint: 'Start building your collection',
+    noResults: 'No Results',
+    tryAgain: 'Try different filters',
+    
+    newMovie: 'New Movie',
+    editMovie: 'Edit Movie',
+    movieDetails: 'Movie Details',
+    newSeries: 'New Series',
+    editSeries: 'Edit Series',
+    seriesDetails: 'Series Details',
+    newTVShow: 'New TV Show',
+    editTVShow: 'Edit TV Show',
+    tvshowDetails: 'TV Show Details',
+    
+    partsUnit: 'parts',
+    seasonsUnit: 'seasons',
+    episodesUnit: 'episodes',
+    itemsLabel: 'items',
+  },
+  ar: {
+    brand: 'El-5al Movie',
+    tagline: 'مجلة الأفلام',
+    footer: 'كل فيلم تشاهده، كل ذكرى تحتفظ بها.',
+    
+    navMain: 'المكتبة',
+    navMovies: 'الأفلام',
+    navSeries: 'سلاسل الأفلام',
+    navTVShows: 'المسلسلات',
+    navTools: 'الأدوات',
+    navExport: 'تصدير نسخة احتياطية',
+    navClear: 'حذف كل البيانات',
+    
+    movies: 'الأفلام',
+    series: 'سلاسل الأفلام',
+    tvshows: 'المسلسلات',
+    
+    total: 'الإجمالي',
+    watched: 'تمت المشاهدة',
+    planning: 'قائمة المشاهدة',
+    watching: 'أشاهد حالياً',
+    favorites: 'المفضلة',
+    avgRating: 'متوسط التقييم',
+    parts: 'الأجزاء',
+    seasons: 'المواسم',
+    
+    search: 'بحث...',
+    all: 'الكل',
+    newest: 'الأحدث',
+    oldest: 'الأقدم',
+    topRated: 'الأعلى تقييماً',
+    aToZ: 'أبجدي',
+    allGenres: 'كل الأنواع',
+    
+    addMovie: 'إضافة فيلم',
+    addSeries: 'إضافة سلسلة',
+    addTVShow: 'إضافة مسلسل',
+    save: 'حفظ',
+    cancel: 'إلغاء',
+    edit: 'تعديل',
+    delete: 'حذف',
+    yesDelete: 'حذف',
+    
+    title: 'العنوان',
+    genre: 'النوع',
+    year: 'سنة الإصدار',
+    rating: 'التقييم',
+    status: 'الحالة',
+    favorite: 'إضافة للمفضلة',
+    notes: 'ملاحظات',
+    numParts: 'عدد الأجزاء',
+    numSeasons: 'المواسم',
+    numEpisodes: 'الحلقات',
+    addedOn: 'تاريخ الإضافة',
+    
+    statusWatched: 'تمت المشاهدة',
+    statusPlanning: 'في قائمة المشاهدة',
+    statusWatching: 'أشاهد حالياً',
+    
+    required: 'مطلوب',
+    exists: 'موجود مسبقاً',
+    added: 'تمت الإضافة!',
+    updated: 'تم التحديث!',
+    deleted: 'تم الحذف',
+    favAdded: 'أُضيف للمفضلة',
+    favRemoved: 'أُزيل من المفضلة',
+    exported: 'تم التصدير!',
+    noData: 'لا توجد بيانات',
+    cleared: 'تم حذف كل البيانات',
+    confirmDel: 'حذف',
+    confirmClear: 'حذف كل البيانات؟ لا يمكن التراجع!',
+    
+    emptyMovies: 'لا توجد أفلام',
+    emptySeries: 'لا توجد سلاسل',
+    emptyTVShows: 'لا توجد مسلسلات',
+    emptyHint: 'ابدأ ببناء مجموعتك',
+    noResults: 'لا توجد نتائج',
+    tryAgain: 'جرب فلاتر مختلفة',
+    
+    newMovie: 'فيلم جديد',
+    editMovie: 'تعديل الفيلم',
+    movieDetails: 'تفاصيل الفيلم',
+    newSeries: 'سلسلة جديدة',
+    editSeries: 'تعديل السلسلة',
+    seriesDetails: 'تفاصيل السلسلة',
+    newTVShow: 'مسلسل جديد',
+    editTVShow: 'تعديل المسلسل',
+    tvshowDetails: 'تفاصيل المسلسل',
+    
+    partsUnit: 'أجزاء',
+    seasonsUnit: 'مواسم',
+    episodesUnit: 'حلقات',
+    itemsLabel: 'عناصر',
   }
-}
+};
 
-/**
- * Save movies to LocalStorage
- * @param {Array} movies - Array of movie objects
- */
-function saveMovies(movies) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(movies));
-  } catch (e) {
-    console.error('Error saving movies:', e);
-    showNotification('Failed to save data!', 'error');
-  }
-}
-
-/**
- * Generate a unique ID
- * @returns {string} Unique identifier
- */
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
-}
+const genres = {
+  en: ['Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy', 'Horror', 'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War', 'Other'],
+  ar: ['أكشن', 'مغامرة', 'رسوم متحركة', 'كوميدي', 'جريمة', 'وثائقي', 'دراما', 'فانتازيا', 'رعب', 'موسيقي', 'غموض', 'رومانسي', 'خيال علمي', 'إثارة', 'حرب', 'أخرى']
+};
 
 // ============================================
 // STATE
 // ============================================
+const KEYS = { movies: 'el5al_m', series: 'el5al_s', tvshows: 'el5al_t', lang: 'el5al_l', page: 'el5al_p' };
 
-let movies = loadMovies();
-let currentFilter = 'all';
-let currentSort = 'newest';
-let currentGenre = 'all';
-let searchQuery = '';
-let editingMovieId = null;
-
-// ============================================
-// DOM REFERENCES
-// ============================================
-
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => document.querySelectorAll(selector);
-
-// Elements cached after DOM loads
-let elements = {};
+let lang = localStorage.getItem(KEYS.lang) || 'en';
+let movies = JSON.parse(localStorage.getItem(KEYS.movies) || '[]');
+let series = JSON.parse(localStorage.getItem(KEYS.series) || '[]');
+let tvshows = JSON.parse(localStorage.getItem(KEYS.tvshows) || '[]');
+let page = localStorage.getItem(KEYS.page) || 'movies';
+let filter = 'all';
+let sort = 'newest';
+let genreFilter = 'all';
+let search = '';
+let editId = null;
 
 // ============================================
-// INITIALIZATION
+// HELPERS
 // ============================================
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const t = k => i18n[lang][k] || k;
+const save = (k, d) => localStorage.setItem(k, JSON.stringify(d));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
+const esc = s => { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; };
+const stars = r => '★'.repeat(Math.round(r/2)) + '☆'.repeat(5 - Math.round(r/2));
+const debounce = (f, d) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => f(...a), d); }; };
 
+// ============================================
+// INIT
+// ============================================
 document.addEventListener('DOMContentLoaded', () => {
-  cacheElements();
-  populateGenreOptions();
-  bindEvents();
-  renderAll();
+  setLang(lang);
+  bind();
+  go(page);
 });
 
-/**
- * Cache all frequently accessed DOM elements
- */
-function cacheElements() {
-  elements = {
-    // Stats
-    statTotal: $('#stat-total'),
-    statWatched: $('#stat-watched'),
-    statPlanning: $('#stat-planning'),
-    statFavorites: $('#stat-favorites'),
-    statRating: $('#stat-rating'),
-    // Grid
-    moviesGrid: $('#movies-grid'),
-    // Search
-    searchInput: $('#search-input'),
-    // Filters
-    filterTabs: $$('.filter-tab'),
-    sortSelect: $('#sort-select'),
-    genreSelect: $('#genre-filter-select'),
-    // Add/Edit Modal
-    movieModal: $('#movie-modal'),
-    movieForm: $('#movie-form'),
-    modalTitle: $('#modal-title'),
-    inputTitle: $('#input-title'),
-    inputGenre: $('#input-genre'),
-    inputYear: $('#input-year'),
-    inputRating: $('#input-rating'),
-    inputStatus: $('#input-status'),
-    inputFavorite: $('#input-favorite'),
-    inputNotes: $('#input-notes'),
-    ratingNumber: $('#rating-number'),
-    errorTitle: $('#error-title'),
-    // Detail Modal
-    detailModal: $('#detail-modal'),
-    // Confirm Modal
-    confirmModal: $('#confirm-modal'),
-    confirmText: $('#confirm-text'),
-    confirmYes: $('#confirm-yes'),
-    // Notification container
-    notifContainer: $('#notification-container'),
-    // Data buttons
-    importInput: $('#import-input'),
+// ============================================
+// LANGUAGE
+// ============================================
+function setLang(l) {
+  lang = l;
+  localStorage.setItem(KEYS.lang, l);
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = l;
+  $('#lang-en').classList.toggle('active', l === 'en');
+  $('#lang-ar').classList.toggle('active', l === 'ar');
+  updateText();
+  updateCounts();
+  render();
+}
+
+function updateText() {
+  $('#brand-name').textContent = t('brand');
+  $('#brand-tagline').textContent = t('tagline');
+  $('#nav-main-label').textContent = t('navMain');
+  $('#nav-movies-text').textContent = t('navMovies');
+  $('#nav-series-text').textContent = t('navSeries');
+  $('#nav-tvshows-text').textContent = t('navTVShows');
+  $('#nav-tools-label').textContent = t('navTools');
+  $('#nav-export-text').textContent = t('navExport');
+  $('#nav-clear-text').textContent = t('navClear');
+  $('#footer-text').textContent = t('footer');
+  updateHeader();
+}
+
+function updateCounts() {
+  $('#nav-movies-count').textContent = movies.length;
+  $('#nav-series-count').textContent = series.length;
+  $('#nav-tvshows-count').textContent = tvshows.length;
+}
+
+// ============================================
+// NAVIGATION
+// ============================================
+function go(p) {
+  page = p;
+  filter = 'all';
+  genreFilter = 'all';
+  search = '';
+  localStorage.setItem(KEYS.page, p);
+  
+  $$('.nav-link[data-page]').forEach(el => el.classList.toggle('active', el.dataset.page === p));
+  $$('.page-section').forEach(el => el.classList.toggle('active', el.id === `page-${p}`));
+  
+  closeSidebar();
+  updateHeader();
+  populateGenres();
+  render();
+}
+
+function updateHeader() {
+  const icons = { movies: '🎬', series: '🎞️', tvshows: '📺' };
+  const titles = { movies: t('movies'), series: t('series'), tvshows: t('tvshows') };
+  const adds = { movies: t('addMovie'), series: t('addSeries'), tvshows: t('addTVShow') };
+  const data = getData();
+  
+  $('#header-icon').textContent = icons[page];
+  $('#header-title').textContent = titles[page];
+  $('#header-count').textContent = `${data.length} ${t('itemsLabel')}`;
+  $('#add-btn').innerHTML = `<span style="font-size:18px">+</span> ${adds[page]}`;
+  $('#search-input').placeholder = t('search');
+  $('#search-input').value = '';
+  
+  // Filters
+  $('#filter-all span').textContent = t('all');
+  $('#filter-watched span').textContent = t('watched');
+  $('#filter-planning span').textContent = t('planning');
+  $('#filter-watching span').textContent = t('watching');
+  $('#filter-favorites span').textContent = t('favorites');
+  $('#filter-watching').style.display = page === 'tvshows' ? 'flex' : 'none';
+  
+  $$('.filter-pill').forEach(el => el.classList.toggle('active', el.dataset.filter === 'all'));
+  
+  // Sort
+  const sortSel = $('#sort-select');
+  sortSel.innerHTML = `
+    <option value="newest">${t('newest')}</option>
+    <option value="oldest">${t('oldest')}</option>
+    <option value="rating">${t('topRated')}</option>
+    <option value="alpha">${t('aToZ')}</option>
+  `;
+}
+
+function populateGenres() {
+  const g = genres[lang];
+  const sel = $('#genre-select');
+  sel.innerHTML = `<option value="all">${t('allGenres')}</option>` + g.map(x => `<option value="${x}">${x}</option>`).join('');
+}
+
+// ============================================
+// SIDEBAR
+// ============================================
+function toggleSidebar() {
+  $('.sidebar').classList.toggle('open');
+  $('.sidebar-backdrop').classList.toggle('open');
+}
+
+function closeSidebar() {
+  $('.sidebar').classList.remove('open');
+  $('.sidebar-backdrop').classList.remove('open');
+}
+
+// ============================================
+// EVENTS
+// ============================================
+function bind() {
+  $('#lang-en').onclick = () => setLang('en');
+  $('#lang-ar').onclick = () => setLang('ar');
+  $('#mobile-toggle').onclick = toggleSidebar;
+  $('.sidebar-backdrop').onclick = closeSidebar;
+  
+  $$('.nav-link[data-page]').forEach(el => el.onclick = () => go(el.dataset.page));
+  $('#nav-export').onclick = exportData;
+  $('#nav-clear').onclick = clearAll;
+  
+  $('#search-input').oninput = debounce(e => { search = e.target.value.trim().toLowerCase(); renderGrid(); }, 200);
+  
+  $$('.filter-pill').forEach(el => el.onclick = () => {
+    $$('.filter-pill').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+    filter = el.dataset.filter;
+    renderGrid();
+  });
+  
+  $('#sort-select').onchange = e => { sort = e.target.value; renderGrid(); };
+  $('#genre-select').onchange = e => { genreFilter = e.target.value; renderGrid(); };
+  
+  $('#add-btn').onclick = openAdd;
+  $('#content-form').onsubmit = e => { e.preventDefault(); handleSave(); };
+  
+  $$('[data-close]').forEach(el => el.onclick = closeModals);
+  $$('.modal-backdrop').forEach(el => el.onclick = e => { if (e.target === el) closeModals(); });
+  
+  document.onkeydown = e => {
+    if (e.key === 'Escape') closeModals();
+    if (e.key === 'Enter' && $('#form-modal').classList.contains('open') && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      handleSave();
+    }
   };
 }
 
-/**
- * Populate genre dropdowns
- */
-function populateGenreOptions() {
-  // Form genre select
-  const genreSelect = elements.inputGenre;
-  GENRES.forEach(g => {
-    const opt = document.createElement('option');
-    opt.value = g;
-    opt.textContent = g;
-    genreSelect.appendChild(opt);
-  });
-
-  // Filter genre select
-  const filterGenre = elements.genreSelect;
-  GENRES.forEach(g => {
-    const opt = document.createElement('option');
-    opt.value = g;
-    opt.textContent = g;
-    filterGenre.appendChild(opt);
-  });
-}
-
 // ============================================
-// EVENT BINDING
+// RENDER
 // ============================================
-
-function bindEvents() {
-  // Search
-  elements.searchInput.addEventListener('input', debounce((e) => {
-    searchQuery = e.target.value.trim().toLowerCase();
-    renderMovies();
-  }, 200));
-
-  // Filter tabs
-  elements.filterTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      elements.filterTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentFilter = tab.dataset.filter;
-      renderMovies();
-    });
-  });
-
-  // Sort
-  elements.sortSelect.addEventListener('change', (e) => {
-    currentSort = e.target.value;
-    renderMovies();
-  });
-
-  // Genre filter
-  elements.genreSelect.addEventListener('change', (e) => {
-    currentGenre = e.target.value;
-    renderMovies();
-  });
-
-  // Add Movie button
-  $('#btn-add-movie').addEventListener('click', () => openAddModal());
-
-  // Form submit
-  elements.movieForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    handleSaveMovie();
-  });
-
-  // Rating slider
-  elements.inputRating.addEventListener('input', (e) => {
-    elements.ratingNumber.textContent = e.target.value;
-  });
-
-  // Close modal buttons
-  $$('[data-close-modal]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      closeAllModals();
-    });
-  });
-
-  // Click outside modal to close
-  $$('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) {
-        closeAllModals();
-      }
-    });
-  });
-
-  // Keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    // ESC closes any open modal
-    if (e.key === 'Escape') {
-      closeAllModals();
-    }
-    // Enter to save movie (when form modal is open and not in textarea)
-    if (e.key === 'Enter' && elements.movieModal.classList.contains('open')) {
-      if (e.target.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        handleSaveMovie();
-      }
-    }
-  });
-
-  // Export
-  $('#btn-export').addEventListener('click', exportMovies);
-
-  // Import
-  $('#btn-import').addEventListener('click', () => elements.importInput.click());
-  elements.importInput.addEventListener('change', importMovies);
-
-  // Clear all
-  $('#btn-clear-all').addEventListener('click', clearAllData);
-
-  // Ripple effect on all buttons
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.btn');
-    if (btn) createRipple(e, btn);
-  });
-}
-
-// ============================================
-// RENDER FUNCTIONS
-// ============================================
-
-/**
- * Render everything
- */
-function renderAll() {
+function render() {
   renderStats();
-  renderMovies();
+  renderGrid();
+  updateCounts();
 }
 
-/**
- * Render dashboard statistics
- */
+function getData() {
+  return page === 'movies' ? movies : page === 'series' ? series : tvshows;
+}
+
 function renderStats() {
-  const total = movies.length;
-  const watched = movies.filter(m => m.status === 'watched').length;
-  const planning = movies.filter(m => m.status === 'planning').length;
-  const favorites = movies.filter(m => m.favorite).length;
-
-  const ratedMovies = movies.filter(m => m.rating > 0);
-  const avgRating = ratedMovies.length > 0
-    ? (ratedMovies.reduce((sum, m) => sum + m.rating, 0) / ratedMovies.length).toFixed(1)
-    : '0.0';
-
-  animateNumber(elements.statTotal, total);
-  animateNumber(elements.statWatched, watched);
-  animateNumber(elements.statPlanning, planning);
-  animateNumber(elements.statFavorites, favorites);
-  elements.statRating.textContent = avgRating;
+  const c = $(`#stats-${page}`);
+  const d = getData();
+  
+  if (page === 'movies') {
+    const w = d.filter(x => x.status === 'watched').length;
+    const p = d.filter(x => x.status === 'planning').length;
+    const f = d.filter(x => x.favorite).length;
+    const r = d.filter(x => x.rating > 0);
+    const a = r.length ? (r.reduce((s,x) => s + x.rating, 0) / r.length).toFixed(1) : '0.0';
+    c.innerHTML = `
+      <div class="stat-card"><div class="stat-icon">🎬</div><div class="stat-data"><span class="stat-value">${d.length}</span><span class="stat-label">${t('total')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-data"><span class="stat-value">${w}</span><span class="stat-label">${t('watched')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-data"><span class="stat-value">${p}</span><span class="stat-label">${t('planning')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">❤️</div><div class="stat-data"><span class="stat-value">${f}</span><span class="stat-label">${t('favorites')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-data"><span class="stat-value">${a}</span><span class="stat-label">${t('avgRating')}</span></div></div>
+    `;
+  } else if (page === 'series') {
+    const pts = d.reduce((s,x) => s + (x.parts || 0), 0);
+    const w = d.filter(x => x.status === 'watched').length;
+    const f = d.filter(x => x.favorite).length;
+    const r = d.filter(x => x.rating > 0);
+    const a = r.length ? (r.reduce((s,x) => s + x.rating, 0) / r.length).toFixed(1) : '0.0';
+    c.innerHTML = `
+      <div class="stat-card"><div class="stat-icon">🎞️</div><div class="stat-data"><span class="stat-value">${d.length}</span><span class="stat-label">${t('total')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">🎬</div><div class="stat-data"><span class="stat-value">${pts}</span><span class="stat-label">${t('parts')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-data"><span class="stat-value">${w}</span><span class="stat-label">${t('watched')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">❤️</div><div class="stat-data"><span class="stat-value">${f}</span><span class="stat-label">${t('favorites')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-data"><span class="stat-value">${a}</span><span class="stat-label">${t('avgRating')}</span></div></div>
+    `;
+  } else {
+    const ss = d.reduce((s,x) => s + (x.seasons || 0), 0);
+    const w = d.filter(x => x.status === 'watched').length;
+    const wg = d.filter(x => x.status === 'watching').length;
+    const f = d.filter(x => x.favorite).length;
+    const r = d.filter(x => x.rating > 0);
+    const a = r.length ? (r.reduce((s,x) => s + x.rating, 0) / r.length).toFixed(1) : '0.0';
+    c.innerHTML = `
+      <div class="stat-card"><div class="stat-icon">📺</div><div class="stat-data"><span class="stat-value">${d.length}</span><span class="stat-label">${t('total')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-data"><span class="stat-value">${ss}</span><span class="stat-label">${t('seasons')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-data"><span class="stat-value">${w}</span><span class="stat-label">${t('watched')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">▶️</div><div class="stat-data"><span class="stat-value">${wg}</span><span class="stat-label">${t('watching')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">❤️</div><div class="stat-data"><span class="stat-value">${f}</span><span class="stat-label">${t('favorites')}</span></div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-data"><span class="stat-value">${a}</span><span class="stat-label">${t('avgRating')}</span></div></div>
+    `;
+  }
 }
 
-/**
- * Animate a number from current value to new value
- */
-function animateNumber(el, target) {
-  const current = parseInt(el.textContent) || 0;
-  if (current === target) return;
-
-  const duration = 400;
-  const start = performance.now();
-
-  function update(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-    el.textContent = Math.round(current + (target - current) * eased);
-    if (progress < 1) requestAnimationFrame(update);
-  }
-
-  requestAnimationFrame(update);
+function getFiltered() {
+  let d = [...getData()];
+  
+  if (search) d = d.filter(x => x.title.toLowerCase().includes(search) || (x.genre && x.genre.toLowerCase().includes(search)) || (x.notes && x.notes.toLowerCase().includes(search)));
+  if (filter === 'watched') d = d.filter(x => x.status === 'watched');
+  else if (filter === 'planning') d = d.filter(x => x.status === 'planning');
+  else if (filter === 'watching') d = d.filter(x => x.status === 'watching');
+  else if (filter === 'favorites') d = d.filter(x => x.favorite);
+  if (genreFilter !== 'all') d = d.filter(x => x.genre === genreFilter);
+  
+  if (sort === 'newest') d.sort((a,b) => b.createdAt - a.createdAt);
+  else if (sort === 'oldest') d.sort((a,b) => a.createdAt - b.createdAt);
+  else if (sort === 'rating') d.sort((a,b) => b.rating - a.rating);
+  else if (sort === 'alpha') d.sort((a,b) => a.title.localeCompare(b.title, lang));
+  
+  return d;
 }
 
-/**
- * Get filtered and sorted movies
- * @returns {Array} Filtered movie list
- */
-function getFilteredMovies() {
-  let result = [...movies];
-
-  // Search filter
-  if (searchQuery) {
-    result = result.filter(m =>
-      m.title.toLowerCase().includes(searchQuery) ||
-      m.genre.toLowerCase().includes(searchQuery) ||
-      (m.notes && m.notes.toLowerCase().includes(searchQuery))
-    );
-  }
-
-  // Status / favorite filter
-  switch (currentFilter) {
-    case 'watched':
-      result = result.filter(m => m.status === 'watched');
-      break;
-    case 'planning':
-      result = result.filter(m => m.status === 'planning');
-      break;
-    case 'favorites':
-      result = result.filter(m => m.favorite);
-      break;
-  }
-
-  // Genre filter
-  if (currentGenre !== 'all') {
-    result = result.filter(m => m.genre === currentGenre);
-  }
-
-  // Sort
-  switch (currentSort) {
-    case 'newest':
-      result.sort((a, b) => b.createdAt - a.createdAt);
-      break;
-    case 'oldest':
-      result.sort((a, b) => a.createdAt - b.createdAt);
-      break;
-    case 'rating':
-      result.sort((a, b) => b.rating - a.rating);
-      break;
-    case 'alpha':
-      result.sort((a, b) => a.title.localeCompare(b.title));
-      break;
-  }
-
-  return result;
-}
-
-/**
- * Render movie cards into the grid
- */
-function renderMovies() {
-  const filtered = getFilteredMovies();
-  const grid = elements.moviesGrid;
-
-  if (filtered.length === 0) {
-    grid.innerHTML = `
+function renderGrid() {
+  const f = getFiltered();
+  const g = $(`#grid-${page}`);
+  const all = getData();
+  
+  if (!f.length) {
+    const icons = { movies: '🎬', series: '🎞️', tvshows: '📺' };
+    const empties = { movies: t('emptyMovies'), series: t('emptySeries'), tvshows: t('emptyTVShows') };
+    g.innerHTML = `
       <div class="empty-state">
-        <span class="empty-icon">🎬</span>
-        <h3 class="empty-title">${movies.length === 0 ? 'No Movies Yet' : 'No Results Found'}</h3>
-        <p class="empty-text">${movies.length === 0 ? 'Click "Add Movie" to start building your collection.' : 'Try a different search or filter.'}</p>
-        ${movies.length === 0 ? '<button class="btn btn-primary" onclick="openAddModal()">+ Add Your First Movie</button>' : ''}
+        <div class="empty-icon">${icons[page]}</div>
+        <div class="empty-title">${all.length ? t('noResults') : empties[page]}</div>
+        <div class="empty-text">${all.length ? t('tryAgain') : t('emptyHint')}</div>
+        ${!all.length ? `<button class="btn btn-primary" onclick="openAdd()">${t('addMovie').split(' ')[0]}</button>` : ''}
       </div>
     `;
     return;
   }
-
-  grid.innerHTML = filtered.map((movie, index) => `
-    <div class="movie-card" style="animation-delay: ${index * 0.05}s" data-id="${movie.id}">
-      <div class="movie-card-header">
-        <h3 class="movie-title" onclick="openDetailModal('${movie.id}')">${escapeHtml(movie.title)}</h3>
-        <button class="movie-fav-btn ${movie.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${movie.id}')" title="${movie.favorite ? 'Remove from favorites' : 'Add to favorites'}">
-          ${movie.favorite ? '❤️' : '🤍'}
-        </button>
-      </div>
-
-      <div class="movie-meta">
-        ${movie.genre ? `<span class="movie-genre">${escapeHtml(movie.genre)}</span>` : ''}
-        ${movie.year ? `<span class="movie-year">${movie.year}</span>` : ''}
-      </div>
-
-      ${movie.rating > 0 ? `
-        <div class="movie-rating">
-          <span class="movie-rating-stars">${getStars(movie.rating)}</span>
-          <span class="movie-rating-value">${movie.rating}/10</span>
-        </div>
-      ` : ''}
-
-      <div>
-        <span class="movie-status-badge ${movie.status === 'watched' ? 'badge-watched' : 'badge-planning'}">
-          ${movie.status === 'watched' ? '✓ Watched' : '◷ Planning'}
-        </span>
-      </div>
-
-      ${movie.notes ? `<p class="movie-notes-preview">"${escapeHtml(movie.notes)}"</p>` : ''}
-
-      <div class="movie-card-footer">
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); openEditModal('${movie.id}')">✏️ Edit</button>
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); confirmDeleteMovie('${movie.id}')">🗑️ Delete</button>
-      </div>
-    </div>
-  `).join('');
+  
+  g.innerHTML = f.map((x, i) => card(x, i)).join('');
 }
 
-/**
- * Convert rating (1-10) to star display
- */
-function getStars(rating) {
-  const full = Math.round(rating / 2);
-  return '★'.repeat(full) + '☆'.repeat(5 - full);
-}
-
-// ============================================
-// MODAL MANAGEMENT
-// ============================================
-
-/**
- * Open Add Movie modal
- */
-function openAddModal() {
-  editingMovieId = null;
-  elements.modalTitle.textContent = '🎬 Add New Movie';
-  elements.movieForm.reset();
-  elements.ratingNumber.textContent = '5';
-  elements.inputRating.value = 5;
-  clearFormErrors();
-  openModal(elements.movieModal);
-  elements.inputTitle.focus();
-}
-
-/**
- * Open Edit Movie modal
- */
-function openEditModal(id) {
-  const movie = movies.find(m => m.id === id);
-  if (!movie) return;
-
-  editingMovieId = id;
-  elements.modalTitle.textContent = '✏️ Edit Movie';
-  elements.inputTitle.value = movie.title;
-  elements.inputGenre.value = movie.genre;
-  elements.inputYear.value = movie.year || '';
-  elements.inputRating.value = movie.rating;
-  elements.ratingNumber.textContent = movie.rating;
-  elements.inputStatus.value = movie.status;
-  elements.inputFavorite.checked = movie.favorite;
-  elements.inputNotes.value = movie.notes || '';
-  clearFormErrors();
-  openModal(elements.movieModal);
-  elements.inputTitle.focus();
-}
-
-/**
- * Open Movie Detail modal
- */
-function openDetailModal(id) {
-  const movie = movies.find(m => m.id === id);
-  if (!movie) return;
-
-  const body = elements.detailModal.querySelector('.modal-body');
-  body.innerHTML = `
-    <div class="detail-field">
-      <div class="detail-title">${escapeHtml(movie.title)}</div>
-    </div>
-
-    <div class="detail-badges">
-      <span class="movie-status-badge ${movie.status === 'watched' ? 'badge-watched' : 'badge-planning'}">
-        ${movie.status === 'watched' ? '✓ Watched' : '◷ Planning'}
-      </span>
-      ${movie.favorite ? '<span class="movie-status-badge badge-watched">❤️ Favorite</span>' : ''}
-    </div>
-
-    <div class="detail-row">
-      ${movie.genre ? `
-        <div class="detail-field">
-          <div class="detail-label">Genre</div>
-          <div class="detail-value">${escapeHtml(movie.genre)}</div>
-        </div>
-      ` : ''}
-      ${movie.year ? `
-        <div class="detail-field">
-          <div class="detail-label">Release Year</div>
-          <div class="detail-value">${movie.year}</div>
-        </div>
-      ` : ''}
-    </div>
-
-    ${movie.rating > 0 ? `
-      <div class="detail-field">
-        <div class="detail-label">Rating</div>
-        <div style="display:flex;align-items:center;gap:14px;margin-top:4px;">
-          <span class="detail-rating-big">${movie.rating}<span class="detail-rating-max">/10</span></span>
-          <span class="detail-stars">${getStars(movie.rating)}</span>
-        </div>
+function card(x, i) {
+  const cls = page === 'series' ? 'series-card' : page === 'tvshows' ? 'tvshow-card' : '';
+  const stCls = x.status === 'watched' ? 'status-watched' : x.status === 'watching' ? 'status-watching' : 'status-planning';
+  const stTxt = x.status === 'watched' ? t('statusWatched') : x.status === 'watching' ? t('statusWatching') : t('statusPlanning');
+  
+  let extra = '';
+  if (page === 'series' && x.parts) extra = `<span class="tag tag-parts">${x.parts} ${t('partsUnit')}</span>`;
+  if (page === 'tvshows' && x.seasons) extra = `<span class="tag tag-seasons">${x.seasons} ${t('seasonsUnit')}</span>`;
+  
+  return `
+    <article class="card ${cls}" style="animation-delay:${i * 0.04}s">
+      <div class="card-header">
+        <h3 class="card-title" onclick="openDetail('${x.id}')">${esc(x.title)}</h3>
+        <button class="fav-btn ${x.favorite ? 'active' : ''}" onclick="toggleFav('${x.id}')">${x.favorite ? '❤️' : '🤍'}</button>
       </div>
-    ` : ''}
-
-    ${movie.notes ? `
-      <div class="detail-field">
-        <div class="detail-label">Notes</div>
-        <div class="detail-notes">${escapeHtml(movie.notes)}</div>
+      <div class="card-meta">
+        ${x.genre ? `<span class="tag tag-genre">${esc(x.genre)}</span>` : ''}
+        ${x.year ? `<span class="card-year">${x.year}</span>` : ''}
+        ${extra}
       </div>
-    ` : ''}
-
-    <div class="detail-field">
-      <div class="detail-label">Added On</div>
-      <div class="detail-value">${new Date(movie.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-    </div>
-
-    <div class="detail-actions">
-      <button class="btn btn-primary" onclick="closeAllModals(); openEditModal('${movie.id}')">✏️ Edit Movie</button>
-      <button class="btn btn-danger" onclick="closeAllModals(); confirmDeleteMovie('${movie.id}')">🗑️ Delete Movie</button>
-    </div>
+      ${x.rating > 0 ? `<div class="card-rating"><span class="rating-stars">${stars(x.rating)}</span><span class="rating-value">${x.rating}/10</span></div>` : ''}
+      <div class="card-status"><span class="status-badge ${stCls}">${stTxt}</span></div>
+      ${x.notes ? `<p class="card-notes">"${esc(x.notes)}"</p>` : ''}
+      <div class="card-actions">
+        <button class="btn btn-ghost" onclick="openEdit('${x.id}')">✏️ ${t('edit')}</button>
+        <button class="btn btn-ghost" onclick="confirmDel('${x.id}')">🗑️ ${t('delete')}</button>
+      </div>
+    </article>
   `;
-
-  openModal(elements.detailModal);
 }
 
-/**
- * Open a modal overlay
- */
-function openModal(modal) {
-  modal.classList.add('open');
+// ============================================
+// MODALS
+// ============================================
+function openModal(id) {
+  $(id).classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
-/**
- * Close all open modals
- */
-function closeAllModals() {
-  $$('.modal-overlay').forEach(m => m.classList.remove('open'));
+function closeModals() {
+  $$('.modal-backdrop').forEach(m => m.classList.remove('open'));
   document.body.style.overflow = '';
 }
 
+function openAdd() {
+  editId = null;
+  const titles = { movies: t('newMovie'), series: t('newSeries'), tvshows: t('newTVShow') };
+  $('#form-title').innerHTML = `✨ ${titles[page]}`;
+  buildForm();
+  $('#content-form').reset();
+  $('#rating-val').textContent = '5';
+  $('#rating-input').value = 5;
+  clearErrors();
+  openModal('#form-modal');
+  setTimeout(() => $('#title-input').focus(), 100);
+}
+
+function openEdit(id) {
+  const d = getData();
+  const x = d.find(i => i.id === id);
+  if (!x) return;
+  
+  editId = id;
+  const titles = { movies: t('editMovie'), series: t('editSeries'), tvshows: t('editTVShow') };
+  $('#form-title').innerHTML = `✏️ ${titles[page]}`;
+  buildForm();
+  
+  $('#title-input').value = x.title;
+  $('#genre-input').value = x.genre || '';
+  $('#year-input').value = x.year || '';
+  $('#rating-input').value = x.rating || 5;
+  $('#rating-val').textContent = x.rating || 5;
+  $('#status-input').value = x.status;
+  $('#fav-input').checked = x.favorite;
+  $('#notes-input').value = x.notes || '';
+  
+  if (page === 'series' && $('#parts-input')) $('#parts-input').value = x.parts || '';
+  if (page === 'tvshows') {
+    if ($('#seasons-input')) $('#seasons-input').value = x.seasons || '';
+    if ($('#episodes-input')) $('#episodes-input').value = x.episodes || '';
+  }
+  
+  clearErrors();
+  openModal('#form-modal');
+}
+
+function buildForm() {
+  const g = genres[lang];
+  const c = $('#form-fields');
+  
+  const genreOpts = `<option value="">${t('genre')}</option>` + g.map(x => `<option value="${x}">${x}</option>`).join('');
+  const statusOpts = page === 'tvshows'
+    ? `<option value="watched">✅ ${t('statusWatched')}</option><option value="watching">▶️ ${t('statusWatching')}</option><option value="planning">📋 ${t('statusPlanning')}</option>`
+    : `<option value="watched">✅ ${t('statusWatched')}</option><option value="planning">📋 ${t('statusPlanning')}</option>`;
+  
+  let html = `
+    <div class="form-group">
+      <label class="form-label">${t('title')} *</label>
+      <input type="text" id="title-input" class="form-input" maxlength="200">
+      <div class="form-error" id="title-error"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">${t('genre')}</label>
+        <select id="genre-input" class="form-select">${genreOpts}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">${t('year')}</label>
+        <input type="number" id="year-input" class="form-input" min="1888" max="2099">
+      </div>
+    </div>
+  `;
+  
+  if (page === 'series') {
+    html += `
+      <div class="form-group">
+        <label class="form-label">${t('numParts')} *</label>
+        <input type="number" id="parts-input" class="form-input" min="1" max="100">
+        <div class="form-error" id="parts-error"></div>
+      </div>
+    `;
+  }
+  
+  if (page === 'tvshows') {
+    html += `
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">${t('numSeasons')}</label>
+          <input type="number" id="seasons-input" class="form-input" min="1" max="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">${t('numEpisodes')}</label>
+          <input type="number" id="episodes-input" class="form-input" min="1" max="9999">
+        </div>
+      </div>
+    `;
+  }
+  
+  html += `
+    <div class="form-group">
+      <label class="form-label">${t('rating')}</label>
+      <div class="rating-box">
+        <input type="range" id="rating-input" class="rating-slider" min="0" max="10" value="5">
+        <span id="rating-val" class="rating-display">5</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">${t('status')}</label>
+      <select id="status-input" class="form-select">${statusOpts}</select>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-wrap">
+        <input type="checkbox" id="fav-input" class="checkbox-input">
+        <span class="checkbox-label">❤️ ${t('favorite')}</span>
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="form-label">${t('notes')}</label>
+      <textarea id="notes-input" class="form-textarea" maxlength="1000"></textarea>
+    </div>
+  `;
+  
+  c.innerHTML = html;
+  $('#rating-input').oninput = e => $('#rating-val').textContent = e.target.value;
+  $('#save-btn').innerHTML = `💾 ${t('save')}`;
+  $('#cancel-btn').textContent = t('cancel');
+}
+
+function openDetail(id) {
+  const d = getData();
+  const x = d.find(i => i.id === id);
+  if (!x) return;
+  
+  const titles = { movies: t('movieDetails'), series: t('seriesDetails'), tvshows: t('tvshowDetails') };
+  const stCls = x.status === 'watched' ? 'status-watched' : x.status === 'watching' ? 'status-watching' : 'status-planning';
+  const stTxt = x.status === 'watched' ? t('statusWatched') : x.status === 'watching' ? t('statusWatching') : t('statusPlanning');
+  
+  let extra = '';
+  if (page === 'series' && x.parts) extra = `<div class="detail-item"><label>${t('numParts')}</label><span>${x.parts} ${t('partsUnit')}</span></div>`;
+  if (page === 'tvshows') {
+    extra = `
+      ${x.seasons ? `<div class="detail-item"><label>${t('numSeasons')}</label><span>${x.seasons}</span></div>` : ''}
+      ${x.episodes ? `<div class="detail-item"><label>${t('numEpisodes')}</label><span>${x.episodes}</span></div>` : ''}
+    `;
+  }
+  
+  $('#detail-title').innerHTML = `🎬 ${titles[page]}`;
+  $('#detail-body').innerHTML = `
+    <h2 class="detail-title">${esc(x.title)}</h2>
+    <div class="detail-badges">
+      <span class="status-badge ${stCls}">${stTxt}</span>
+      ${x.favorite ? `<span class="status-badge status-watched">❤️ ${t('favorites')}</span>` : ''}
+    </div>
+    <div class="detail-grid">
+      ${x.genre ? `<div class="detail-item"><label>${t('genre')}</label><span>${esc(x.genre)}</span></div>` : ''}
+      ${x.year ? `<div class="detail-item"><label>${t('year')}</label><span>${x.year}</span></div>` : ''}
+      ${extra}
+    </div>
+    ${x.rating > 0 ? `
+      <div class="detail-item" style="margin-bottom:20px">
+        <label>${t('rating')}</label>
+        <div class="detail-rating">
+          <span class="detail-rating-value">${x.rating}<span class="detail-rating-max">/10</span></span>
+          <span class="detail-stars">${stars(x.rating)}</span>
+        </div>
+      </div>
+    ` : ''}
+    ${x.notes ? `<div class="detail-notes">${esc(x.notes)}</div>` : ''}
+    <div class="detail-item"><label>${t('addedOn')}</label><span>${new Date(x.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US', { year:'numeric', month:'long', day:'numeric' })}</span></div>
+    <div class="detail-actions">
+      <button class="btn btn-primary" onclick="closeModals();openEdit('${x.id}')">✏️ ${t('edit')}</button>
+      <button class="btn btn-danger" onclick="closeModals();confirmDel('${x.id}')">🗑️ ${t('delete')}</button>
+    </div>
+  `;
+  
+  openModal('#detail-modal');
+}
+
 // ============================================
-// MOVIE CRUD
+// CRUD
 // ============================================
-
-/**
- * Handle form save (add or edit)
- */
-function handleSaveMovie() {
-  clearFormErrors();
-
-  const title = elements.inputTitle.value.trim();
-  const genre = elements.inputGenre.value;
-  const year = elements.inputYear.value ? parseInt(elements.inputYear.value) : null;
-  const rating = parseInt(elements.inputRating.value);
-  const status = elements.inputStatus.value;
-  const favorite = elements.inputFavorite.checked;
-  const notes = elements.inputNotes.value.trim();
-
-  // Validation: title required
+function handleSave() {
+  clearErrors();
+  
+  const title = $('#title-input').value.trim();
+  const genre = $('#genre-input').value;
+  const year = $('#year-input').value ? parseInt($('#year-input').value) : null;
+  const rating = parseInt($('#rating-input').value);
+  const status = $('#status-input').value;
+  const favorite = $('#fav-input').checked;
+  const notes = $('#notes-input').value.trim();
+  
   if (!title) {
-    showFormError('error-title', 'Movie title is required.');
-    elements.inputTitle.classList.add('error');
-    elements.inputTitle.focus();
+    showError('title-error', `${t('title')} ${t('required')}`);
+    $('#title-input').classList.add('error');
+    $('#title-input').focus();
     return;
   }
-
-  // Validation: duplicate check
-  const duplicate = movies.find(m =>
-    m.title.toLowerCase() === title.toLowerCase() && m.id !== editingMovieId
-  );
-  if (duplicate) {
-    showFormError('error-title', 'A movie with this title already exists.');
-    elements.inputTitle.classList.add('error');
-    elements.inputTitle.focus();
+  
+  const d = getData();
+  if (d.find(x => x.title.toLowerCase() === title.toLowerCase() && x.id !== editId)) {
+    showError('title-error', `"${title}" ${t('exists')}`);
+    $('#title-input').classList.add('error');
     return;
   }
-
-  if (editingMovieId) {
-    // Update existing movie
-    const index = movies.findIndex(m => m.id === editingMovieId);
-    if (index !== -1) {
-      movies[index] = {
-        ...movies[index],
-        title,
-        genre,
-        year,
-        rating,
-        status,
-        favorite,
-        notes,
-        updatedAt: Date.now()
-      };
-      showNotification(`"${title}" updated successfully!`, 'success');
+  
+  let parts = null;
+  if (page === 'series') {
+    parts = $('#parts-input').value ? parseInt($('#parts-input').value) : null;
+    if (!parts) {
+      showError('parts-error', `${t('numParts')} ${t('required')}`);
+      $('#parts-input').classList.add('error');
+      return;
     }
-  } else {
-    // Add new movie
-    const movie = {
-      id: generateId(),
-      title,
-      genre,
-      year,
-      rating,
-      status,
-      favorite,
-      notes,
-      createdAt: Date.now(),
-      updatedAt: Date.now()
-    };
-    movies.push(movie);
-    showNotification(`"${title}" added to your collection!`, 'success');
   }
-
-  saveMovies(movies);
-  closeAllModals();
-  renderAll();
-}
-
-/**
- * Toggle favorite status for a movie
- */
-function toggleFavorite(id) {
-  const movie = movies.find(m => m.id === id);
-  if (!movie) return;
-  movie.favorite = !movie.favorite;
-  movie.updatedAt = Date.now();
-  saveMovies(movies);
-  renderAll();
-  showNotification(
-    movie.favorite ? `"${movie.title}" added to favorites!` : `"${movie.title}" removed from favorites.`,
-    'info'
-  );
-}
-
-/**
- * Show delete confirmation
- */
-function confirmDeleteMovie(id) {
-  const movie = movies.find(m => m.id === id);
-  if (!movie) return;
-
-  elements.confirmText.textContent = `Are you sure you want to delete "${movie.title}"? This action cannot be undone.`;
-
-  // Set up the confirm button
-  elements.confirmYes.onclick = () => {
-    deleteMovie(id);
-    closeAllModals();
+  
+  let seasons = null, episodes = null;
+  if (page === 'tvshows') {
+    seasons = $('#seasons-input').value ? parseInt($('#seasons-input').value) : null;
+    episodes = $('#episodes-input').value ? parseInt($('#episodes-input').value) : null;
+  }
+  
+  const item = {
+    id: editId || uid(),
+    title, genre, year, rating, status, favorite, notes,
+    createdAt: editId ? d.find(x => x.id === editId).createdAt : Date.now(),
+    updatedAt: Date.now()
   };
-
-  openModal(elements.confirmModal);
-}
-
-/**
- * Delete a movie by ID
- */
-function deleteMovie(id) {
-  const movie = movies.find(m => m.id === id);
-  if (!movie) return;
-  const title = movie.title;
-  movies = movies.filter(m => m.id !== id);
-  saveMovies(movies);
-  renderAll();
-  showNotification(`"${title}" has been deleted.`, 'error');
-}
-
-// ============================================
-// VALIDATION HELPERS
-// ============================================
-
-function showFormError(errorId, message) {
-  const el = document.getElementById(errorId);
-  if (el) {
-    el.textContent = message;
-    el.classList.add('visible');
+  
+  if (page === 'series') item.parts = parts;
+  if (page === 'tvshows') { item.seasons = seasons; item.episodes = episodes; }
+  
+  if (editId) {
+    const i = d.findIndex(x => x.id === editId);
+    if (i > -1) d[i] = item;
+    toast(`"${title}" ${t('updated')}`, 'success');
+  } else {
+    d.push(item);
+    toast(`"${title}" ${t('added')}`, 'success');
   }
+  
+  saveData(d);
+  closeModals();
+  render();
 }
 
-function clearFormErrors() {
-  $$('.form-error').forEach(e => e.classList.remove('visible'));
+function saveData(d) {
+  if (page === 'movies') { movies = d; save(KEYS.movies, d); }
+  else if (page === 'series') { series = d; save(KEYS.series, d); }
+  else { tvshows = d; save(KEYS.tvshows, d); }
+}
+
+function toggleFav(id) {
+  const d = getData();
+  const x = d.find(i => i.id === id);
+  if (!x) return;
+  x.favorite = !x.favorite;
+  x.updatedAt = Date.now();
+  saveData(d);
+  render();
+  toast(`"${x.title}" ${x.favorite ? t('favAdded') : t('favRemoved')}`, 'info');
+}
+
+function confirmDel(id) {
+  const d = getData();
+  const x = d.find(i => i.id === id);
+  if (!x) return;
+  
+  $('#confirm-text').textContent = `${t('confirmDel')} "${x.title}"?`;
+  $('#confirm-yes').textContent = t('yesDelete');
+  $('#confirm-cancel').textContent = t('cancel');
+  $('#confirm-yes').onclick = () => { delItem(id); closeModals(); };
+  openModal('#confirm-modal');
+}
+
+function delItem(id) {
+  let d = getData();
+  const x = d.find(i => i.id === id);
+  if (!x) return;
+  d = d.filter(i => i.id !== id);
+  saveData(d);
+  render();
+  toast(`"${x.title}" ${t('deleted')}`, 'error');
+}
+
+// ============================================
+// DATA
+// ============================================
+function exportData() {
+  const all = { movies, series, tvshows, date: new Date().toISOString() };
+  const n = movies.length + series.length + tvshows.length;
+  if (!n) { toast(t('noData'), 'info'); closeSidebar(); return; }
+  
+  const b = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = `el5al_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  closeSidebar();
+  toast(t('exported'), 'success');
+}
+
+function clearAll() {
+  const n = movies.length + series.length + tvshows.length;
+  if (!n) { toast(t('noData'), 'info'); closeSidebar(); return; }
+  
+  $('#confirm-text').textContent = t('confirmClear');
+  $('#confirm-yes').textContent = t('yesDelete');
+  $('#confirm-cancel').textContent = t('cancel');
+  $('#confirm-yes').onclick = () => {
+    movies = []; series = []; tvshows = [];
+    save(KEYS.movies, []); save(KEYS.series, []); save(KEYS.tvshows, []);
+    closeModals(); closeSidebar(); render();
+    toast(t('cleared'), 'error');
+  };
+  closeSidebar();
+  openModal('#confirm-modal');
+}
+
+// ============================================
+// HELPERS
+// ============================================
+function showError(id, msg) {
+  const e = document.getElementById(id);
+  if (e) { e.textContent = msg; e.classList.add('show'); }
+}
+
+function clearErrors() {
+  $$('.form-error').forEach(e => e.classList.remove('show'));
   $$('.form-input.error').forEach(e => e.classList.remove('error'));
 }
 
-// ============================================
-// NOTIFICATIONS
-// ============================================
-
-/**
- * Show a toast notification
- * @param {string} message
- * @param {'success'|'error'|'info'} type
- */
-function showNotification(message, type = 'info') {
-  const container = elements.notifContainer;
-  const notif = document.createElement('div');
-  notif.className = `notification ${type}`;
-
+function toast(msg, type = 'info') {
+  const c = $('#toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
   const icons = { success: '✅', error: '❌', info: 'ℹ️' };
-
-  notif.innerHTML = `
-    <span class="notification-icon">${icons[type]}</span>
-    <span class="notification-text">${escapeHtml(message)}</span>
-  `;
-
-  container.appendChild(notif);
-
-  // Auto remove after 3.5 seconds
-  setTimeout(() => {
-    notif.classList.add('fade-out');
-    setTimeout(() => notif.remove(), 300);
-  }, 3500);
-}
-
-// ============================================
-// DATA MANAGEMENT
-// ============================================
-
-/**
- * Export all movies as a JSON file
- */
-function exportMovies() {
-  if (movies.length === 0) {
-    showNotification('No movies to export.', 'info');
-    return;
-  }
-
-  const data = JSON.stringify(movies, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `el5al_films_backup_${new Date().toISOString().split('T')[0]}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  showNotification(`Exported ${movies.length} movies successfully!`, 'success');
-}
-
-/**
- * Import movies from a JSON file
- */
-function importMovies(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    try {
-      const imported = JSON.parse(event.target.result);
-
-      if (!Array.isArray(imported)) {
-        showNotification('Invalid file format. Expected an array of movies.', 'error');
-        return;
-      }
-
-      // Validate each movie has at least a title
-      const valid = imported.filter(m => m && typeof m.title === 'string' && m.title.trim());
-
-      if (valid.length === 0) {
-        showNotification('No valid movies found in the file.', 'error');
-        return;
-      }
-
-      // Assign IDs if missing, avoid duplicates
-      let addedCount = 0;
-      valid.forEach(m => {
-        if (!m.id) m.id = generateId();
-        if (!m.createdAt) m.createdAt = Date.now();
-        if (!m.updatedAt) m.updatedAt = Date.now();
-        if (!m.status) m.status = 'watched';
-        if (typeof m.rating !== 'number') m.rating = 0;
-        if (typeof m.favorite !== 'boolean') m.favorite = false;
-
-        // Check for duplicate titles
-        const exists = movies.some(
-          existing => existing.title.toLowerCase() === m.title.trim().toLowerCase()
-        );
-        if (!exists) {
-          movies.push(m);
-          addedCount++;
-        }
-      });
-
-      saveMovies(movies);
-      renderAll();
-      showNotification(
-        `Imported ${addedCount} movie(s). ${valid.length - addedCount} duplicates skipped.`,
-        'success'
-      );
-    } catch (err) {
-      showNotification('Failed to parse JSON file.', 'error');
-      console.error('Import error:', err);
-    }
-  };
-
-  reader.readAsText(file);
-  // Reset input so the same file can be selected again
-  e.target.value = '';
-}
-
-/**
- * Clear all data with confirmation
- */
-function clearAllData() {
-  if (movies.length === 0) {
-    showNotification('No data to clear.', 'info');
-    return;
-  }
-
-  elements.confirmText.textContent = `Are you sure you want to delete ALL ${movies.length} movies? This cannot be undone!`;
-
-  elements.confirmYes.onclick = () => {
-    movies = [];
-    saveMovies(movies);
-    closeAllModals();
-    renderAll();
-    showNotification('All movies have been cleared.', 'error');
-  };
-
-  openModal(elements.confirmModal);
-}
-
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-
-/**
- * Escape HTML to prevent XSS
- */
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-/**
- * Debounce function for search input
- */
-function debounce(fn, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
-
-/**
- * Create ripple effect on button click
- */
-function createRipple(event, button) {
-  const ripple = document.createElement('span');
-  ripple.classList.add('ripple');
-
-  const rect = button.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
-  ripple.style.width = ripple.style.height = size + 'px';
-  ripple.style.left = (event.clientX - rect.left - size / 2) + 'px';
-  ripple.style.top = (event.clientY - rect.top - size / 2) + 'px';
-
-  button.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 600);
+  t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-text">${esc(msg)}</span>`;
+  c.appendChild(t);
+  setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 3500);
 }

@@ -8,190 +8,181 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>El-5al Movie</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
 </head>
 <body>
 
-  <div class="app-layout">
+  <div class="app">
     
-    <!-- Mobile Toggle -->
-    <button class="mobile-toggle" id="mobile-toggle">☰</button>
-    <div class="sidebar-backdrop"></div>
+    <!-- Mobile Menu Button -->
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div class="overlay" id="overlay"></div>
 
     <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-brand">
-        <a href="#" class="brand-link" onclick="return false">
-          <div class="brand-icon">🎬</div>
-          <div class="brand-text">
-            <span class="brand-name" id="brand-name">El-5al Movie</span>
-            <span class="brand-tagline" id="brand-tagline">MOVIE JOURNAL</span>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">🎬</div>
+          <div class="logo-info">
+            <h1 id="logoTitle">El-5al Movie</h1>
+            <span id="logoTag">MOVIE JOURNAL</span>
           </div>
-        </a>
+        </div>
       </div>
 
-      <nav class="sidebar-nav">
-        <div class="nav-group">
-          <div class="nav-label" id="nav-main-label">Library</div>
-          <button class="nav-link active" data-page="movies">
-            <span class="icon">🎬</span>
-            <span class="text" id="nav-movies-text">Movies</span>
-            <span class="badge" id="nav-movies-count">0</span>
+      <nav class="sidebar-menu">
+        <div class="menu-section">
+          <p class="menu-label" id="menuLabel1">Library</p>
+          <button class="menu-item active" data-page="movies">
+            <span class="menu-icon">🎬</span>
+            <span class="menu-text" id="navMovies">Movies</span>
+            <span class="menu-badge" id="countMovies">0</span>
           </button>
-          <button class="nav-link" data-page="series">
-            <span class="icon">🎞️</span>
-            <span class="text" id="nav-series-text">Film Series</span>
-            <span class="badge" id="nav-series-count">0</span>
+          <button class="menu-item" data-page="series">
+            <span class="menu-icon">🎞️</span>
+            <span class="menu-text" id="navSeries">Film Series</span>
+            <span class="menu-badge" id="countSeries">0</span>
           </button>
-          <button class="nav-link" data-page="tvshows">
-            <span class="icon">📺</span>
-            <span class="text" id="nav-tvshows-text">TV Shows</span>
-            <span class="badge" id="nav-tvshows-count">0</span>
+          <button class="menu-item" data-page="tvshows">
+            <span class="menu-icon">📺</span>
+            <span class="menu-text" id="navTvshows">TV Shows</span>
+            <span class="menu-badge" id="countTvshows">0</span>
           </button>
         </div>
 
-        <div class="nav-group">
-          <div class="nav-label" id="nav-tools-label">Tools</div>
-          <button class="nav-link" id="nav-export">
-            <span class="icon">📥</span>
-            <span class="text" id="nav-export-text">Export Backup</span>
+        <div class="menu-section">
+          <p class="menu-label" id="menuLabel2">Tools</p>
+          <button class="menu-item" id="exportBtn">
+            <span class="menu-icon">💾</span>
+            <span class="menu-text" id="navExport">Export Backup</span>
           </button>
-          <button class="nav-link" id="nav-clear">
-            <span class="icon">🗑️</span>
-            <span class="text" id="nav-clear-text">Clear All Data</span>
+          <button class="menu-item" id="clearBtn">
+            <span class="menu-icon">🗑️</span>
+            <span class="menu-text" id="navClear">Clear All</span>
           </button>
         </div>
       </nav>
 
       <div class="sidebar-footer">
-        <div class="lang-switcher">
-          <button class="lang-btn active" id="lang-en">English</button>
-          <button class="lang-btn" id="lang-ar">العربية</button>
+        <div class="lang-switch">
+          <button class="lang-btn active" id="langEn">EN</button>
+          <button class="lang-btn" id="langAr">عربي</button>
         </div>
       </div>
     </aside>
 
-    <!-- Main Area -->
-    <main class="main-area">
+    <!-- Main Content -->
+    <main class="main">
       
       <!-- Header -->
-      <header class="main-header">
-        <div class="header-content">
-          <div class="header-left">
-            <div class="page-info">
-              <div class="page-icon" id="header-icon">🎬</div>
-              <div class="page-details">
-                <h1 id="header-title">Movies</h1>
-                <span id="header-count">0 items</span>
-              </div>
-            </div>
+      <header class="header">
+        <div class="header-info">
+          <span class="header-icon" id="pageIcon">🎬</span>
+          <div>
+            <h2 id="pageTitle">Movies</h2>
+            <p id="pageCount">0 items</p>
           </div>
-          <div class="header-right">
-            <div class="search-box">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="search-input" class="search-input" placeholder="Search..." autocomplete="off">
-            </div>
-            <button class="btn btn-primary" id="add-btn">
-              <span style="font-size:18px">+</span> Add Movie
-            </button>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search...">
           </div>
+          <button class="btn btn-gold" id="addBtn">+ Add</button>
         </div>
       </header>
 
-      <!-- Content -->
-      <div class="page-content">
+      <!-- Page Content -->
+      <div class="content">
         
         <!-- Movies Page -->
-        <section class="page-section active" id="page-movies">
-          <div class="stats-row" id="stats-movies"></div>
+        <section class="page active" id="pageMovies">
+          <div class="stats" id="statsMovies"></div>
           <div class="toolbar">
-            <div class="toolbar-left">
-              <button class="filter-pill active" data-filter="all" id="filter-all">🎬 <span>All</span></button>
-              <button class="filter-pill" data-filter="watched" id="filter-watched">✅ <span>Watched</span></button>
-              <button class="filter-pill" data-filter="watching" id="filter-watching" style="display:none">▶️ <span>Watching</span></button>
-              <button class="filter-pill" data-filter="planning" id="filter-planning">📋 <span>Planning</span></button>
-              <button class="filter-pill" data-filter="favorites" id="filter-favorites">❤️ <span>Favorites</span></button>
+            <div class="filters" id="filters">
+              <button class="filter active" data-filter="all"><span>🎬</span> <span id="fAll">All</span></button>
+              <button class="filter" data-filter="watched"><span>✅</span> <span id="fWatched">Watched</span></button>
+              <button class="filter" data-filter="watching" id="fWatchingBtn" style="display:none"><span>▶️</span> <span id="fWatching">Watching</span></button>
+              <button class="filter" data-filter="planning"><span>📋</span> <span id="fPlanning">Planning</span></button>
+              <button class="filter" data-filter="favorites"><span>❤️</span> <span id="fFavorites">Favorites</span></button>
             </div>
-            <div class="toolbar-right">
-              <select class="select-box" id="genre-select"></select>
-              <select class="select-box" id="sort-select"></select>
+            <div class="toolbar-end">
+              <select id="genreFilter"></select>
+              <select id="sortFilter"></select>
             </div>
           </div>
-          <div class="content-grid" id="grid-movies"></div>
+          <div class="grid" id="gridMovies"></div>
         </section>
 
         <!-- Series Page -->
-        <section class="page-section" id="page-series">
-          <div class="stats-row" id="stats-series"></div>
-          <div class="content-grid" id="grid-series"></div>
+        <section class="page" id="pageSeries">
+          <div class="stats" id="statsSeries"></div>
+          <div class="grid" id="gridSeries"></div>
         </section>
 
         <!-- TV Shows Page -->
-        <section class="page-section" id="page-tvshows">
-          <div class="stats-row" id="stats-tvshows"></div>
-          <div class="content-grid" id="grid-tvshows"></div>
+        <section class="page" id="pageTvshows">
+          <div class="stats" id="statsTvshows"></div>
+          <div class="grid" id="gridTvshows"></div>
         </section>
 
       </div>
 
       <!-- Footer -->
-      <footer class="main-footer">
-        <p class="footer-text" id="footer-text">Every Film You Watch, Every Memory You Keep.</p>
+      <footer class="footer">
+        <p id="footerText">Every Film You Watch, Every Memory You Keep.</p>
       </footer>
 
     </main>
   </div>
 
-  <!-- Form Modal -->
-  <div class="modal-backdrop" id="form-modal">
+  <!-- Add/Edit Modal -->
+  <div class="modal-wrap" id="formModal">
     <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title" id="form-title">✨ New</h2>
-        <button class="modal-close" data-close>✕</button>
+      <div class="modal-head">
+        <h3 id="formTitle">Add New</h3>
+        <button class="close-btn" data-close>&times;</button>
       </div>
-      <form id="content-form">
-        <div class="modal-body" id="form-fields"></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-close id="cancel-btn">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="save-btn">💾 Save</button>
+      <form id="itemForm">
+        <div class="modal-body" id="formBody"></div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-gray" data-close id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-gold" id="saveBtn">Save</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Detail Modal -->
-  <div class="modal-backdrop" id="detail-modal">
+  <div class="modal-wrap" id="detailModal">
     <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title" id="detail-title">🎬 Details</h2>
-        <button class="modal-close" data-close>✕</button>
+      <div class="modal-head">
+        <h3 id="detailTitle">Details</h3>
+        <button class="close-btn" data-close>&times;</button>
       </div>
-      <div class="modal-body" id="detail-body"></div>
+      <div class="modal-body" id="detailBody"></div>
     </div>
   </div>
 
   <!-- Confirm Modal -->
-  <div class="modal-backdrop" id="confirm-modal">
-    <div class="modal" style="max-width:400px">
-      <div class="modal-header">
-        <h2 class="modal-title">⚠️ Confirm</h2>
-        <button class="modal-close" data-close>✕</button>
+  <div class="modal-wrap" id="confirmModal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h3>⚠️ Confirm</h3>
+        <button class="close-btn" data-close>&times;</button>
       </div>
-      <div class="modal-body">
-        <div class="confirm-content">
-          <div class="confirm-icon">⚠️</div>
-          <p class="confirm-text" id="confirm-text">Are you sure?</p>
-        </div>
+      <div class="modal-body center">
+        <p class="confirm-msg" id="confirmMsg">Are you sure?</p>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-close id="confirm-cancel">Cancel</button>
-        <button class="btn btn-danger" id="confirm-yes">Delete</button>
+      <div class="modal-foot">
+        <button class="btn btn-gray" data-close id="confirmNo">Cancel</button>
+        <button class="btn btn-red" id="confirmYes">Delete</button>
       </div>
     </div>
   </div>
 
-  <!-- Toasts -->
-  <div id="toast-container" class="toast-container"></div>
+  <!-- Toast Container -->
+  <div id="toasts"></div>
 
   <script src="script.js"></script>
 </body>
